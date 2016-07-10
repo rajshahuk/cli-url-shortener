@@ -58,14 +58,17 @@
       false))
   )
 
-(defn shorten [params]
+(defn shorten [params request]
   (let [url (:url params)
-        token (get @urls url)]
+        token (get @urls url)
+        short-url-base (str "http://" (:server-name request) ":" (:server-port request) (:context request) "/x/")]
     (if (validToken? token)
-      token
+      (str short-url-base token)
       (if (.isValid validator url)
         (do
-          (store (str (next-id)) url))
+          (let [new_token (next-id)]
+            (store (str new_token) url)
+            (str short-url-base new_token)))
         (str "invalid url: " url)
         )
       )
@@ -88,7 +91,7 @@
   (GET "/" [] (response/redirect context-path))
   (context context-path []
            (GET "/" [] (response/redirect (str context-path "/index.html")))
-           (GET "/s" {params :params} (shorten params))
+           (GET "/s" {params :params :as request} (shorten params request))
            (GET "/x/:code"  [code] (expand code))
            (route/resources "/")
            (route/not-found "Page not found")))
