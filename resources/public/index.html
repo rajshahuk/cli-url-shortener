@@ -5,6 +5,10 @@
     <title>Welcome to the clj-url-shortener</title>
 </head>
 <body>
-
+<h1>URL Shortener</h1>
+<h2>Create a bookmarklet...</h2>
+<p>Click and drag the following link to your links toolbar:</p>
+<div class="indent"><a href="javascript:void(location.href='http://localhost:3000/clj-url-shortener/s?url='+encodeURIComponent(location.href))"  onmouseover="window.status='';return true" onclick="return false">Shorten!</a></div>
+<p>Once this is on your toolbar, you'll be able to make a TinyURL at the click of a button. By clicking on the toolbar button, a TinyURL will be created for the page you are currently at.</p>
 </body>
 </html>
