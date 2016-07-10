@@ -11,6 +11,8 @@
 ;; app-runner configuration
 (def app-port (Integer/parseInt (get (System/getenv) "APP_PORT" "3000")))
 (def app-name (get (System/getenv) "APP_NAME" "clj-url-shortener"))
+(def app-data (get (System/getenv) "APP_DATA" "target"))
+(def data-file (str app-data (java.io.File/separator) "clj-url-shortener.data"))
 (def context-path (str "/" app-name))
 
 (def validator (UrlValidator. (into-array ["http" "https"]) (. UrlValidator ALLOW_LOCAL_URLS)))
@@ -27,13 +29,13 @@
 
 (defn store [token url]
   (swap! urls assoc url token)
-  (spit "target/out.data" @urls)
+  (spit data-file @urls)
   token)
 
 (defn load-state
   []
   (try
-    (let [loaded-urls (read-string (slurp "target/out.data"))
+    (let [loaded-urls (read-string (slurp data-file))
           max-val (-> loaded-urls
                       vals
                       sort
